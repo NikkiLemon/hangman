@@ -1,3 +1,4 @@
+words_list = [
 'agree',
 'appear',
 'applaud',
@@ -97,4 +98,5 @@
 'wipe',
 'wobble',
 'wrap',
-'zip',
+'zip'
+]
