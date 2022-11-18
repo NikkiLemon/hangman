@@ -14,85 +14,80 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('hangman_words')
 
-animals = SHEET.worksheet('animals')
+word = SHEET.worksheet('words')
 fruits = SHEET.worksheet('fruits')
 pixar_movies = SHEET.worksheet('pixar_movies')
 
-animals_data = animals.get_all_values()
+words_data = word.get_all_values()
+
+def get_word():
+    word = random.choice(words_data)
+    print(word)
+    return word
 
 
+def play(word):
+    word_completion = "_" * len(word)
+    guessed = False
+    guessed_letters = []
+    guessed_words = []
+    tries = 6
 
-def get_random_word(animals_data):
-    """
-    This function returns a random words from the 
-    Google sheet
-    """
-    animal_word = random.randint(0, len(animals_data) - 1)
-    return animals_data[animal_word]
+    print("Let's play Hangman!")
+    print(display_hangman(tries))
+    print(word_completion)
+    print("\n")
 
-
-def display_board(missed_letters, correct_letters, secret_word):
-    print(display_hangman[len(missed_letters)])
-    print()
-
-    print('Missed letters:', end=' ')
-    for letter in missed_letters:
-        print(letter, end=' ')
-    print()
-
-    blanks = '_' * len(secret_word)
-
-    for i in range(len(secret_word)):
-        """
-        Replace blanks with correctly guessed letters
-        """
-        if secret_word[i] in correct_letters:
-            blanks = blanks[:i] + secret_word[i] + blanks [i:1]
-    
-    for letter in blanks:
-        """
-        Show the secret word with spaces in between each letter
-        """
-        print(letter, end=' ')
-    print()
-
-
-def get_guess(already_guessed):
-    """
-    Returns the letter the player entered. 
-    This funtion makes sure the player entered a single letter and not something else.
-    """
-    
-    while True:
-        print('Guess a letter.')
-        guess = input()
-        guess = guess.lower()
-        
-        if len(guess) != 1:
-            print('Please enter a single letter.')
-        elif guess in already_guessed:
-            print('You have already guessed that letter, choose again.')
-        elif guess not in 'abcdefghijklmnopqrstuvwxyz':
-            print('Please enter a letter.')
+    while not guessed and tries > 0:
+        guess = input("Please guess a letter or word: ")
+        if len(guess) == 1 and guess.isalpha():
+            if guess in guessed_letters:
+                print("You already guessed the letter", guess)
+            elif guess not in word:
+                print(guess, "is not in the word.")
+                tries -= 1
+                guessed_letters.append(guess)
+                print(guessed_letters)
+            else:
+                print("Good job,", guess, "is in the word!")
+                guessed_letters.append(guess)
+                word_as_list = list(word_completion)
+                indices = [i for i, letter in enumerate(word) if letter == guess]
+                for index in indices:
+                    word_as_list[index] = guess
+                word_completion = "".join(word_as_list)
+                if "_" not in word_completion:
+                    guessed = True
+        elif len(guess) == len(word) and guess.isalpha():
+            if guess in guessed_words:
+                print("You already guessed the word", guess)
+            elif guess != word:
+                print(guess, "is not the word.")
+                tries -= 1
+                guessed_words.append(guess)
+            else:
+                guessed = True
+                word_completion = word
         else:
-            return guess
-
-
-def play_again():
-    """
-    This function returns True if the player wants to play again
-    Otherwise, it returns false.
-    """
-    print('Do you want to play again? (yes or no)')
-    return input().lower().startswith('y')
+            print("Not a valid guess.")
+        print(display_hangman(tries))
+        print(word_completion)
+        print("\n")
+    if guessed:
+        print("Congrats, you guessed the word! You win!")
+    else:
+        print("Sorry, you ran out of tries. The word was ")
+        print(word)
+        print("Try again next time")
 
 
 def main():
-    print(get_random_word(animals_data))
-    print('H A N G M A N')
-    missed_letters = ' '
-    correct_letters = ' '
-    secret_word = get_random_word(animals_data)
-    display_board(missed_letters, correct_letters, secret_word)
-    get_guess(already_guessed)
-main()
+    word = get_word()
+    play(word)
+    while input("Play Again? (Y/N) ").upper() == "Y":
+        word = get_word()
+        play(word)
+
+
+if __name__ == "__main__":
+    main()
