@@ -78,6 +78,14 @@ def get_guess(already_guessed):
             return guess
 
 
+def play_again():
+    """
+    This function returns True if the player wants to play again
+    Otherwise, it returns false.
+    """
+    print('Do you want to play again? (yes or no)')
+    return input().lower().startswith('y')
+
 
 def main():
     print(get_random_word(animals_data))
