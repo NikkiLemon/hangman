@@ -20,6 +20,8 @@ pixar_movies = SHEET.worksheet('pixar_movies')
 
 animals_data = animals.get_all_values()
 
+
+
 def get_random_word(animals_data):
     """
     This function returns a random words from the 
@@ -27,6 +29,7 @@ def get_random_word(animals_data):
     """
     animal_word = random.randint(0, len(animals_data) - 1)
     return animals_data[animal_word]
+
 
 def display_board(missed_letters, correct_letters, secret_word):
     print(display_hangman[len(missed_letters)])
@@ -54,6 +57,28 @@ def display_board(missed_letters, correct_letters, secret_word):
     print()
 
 
+def get_guess(already_guessed):
+    """
+    Returns the letter the player entered. 
+    This funtion makes sure the player entered a single letter and not something else.
+    """
+    
+    while True:
+        print('Guess a letter.')
+        guess = input()
+        guess = guess.lower()
+        
+        if len(guess) != 1:
+            print('Please enter a single letter.')
+        elif guess in already_guessed:
+            print('You have already guessed that letter, choose again.')
+        elif guess not in 'abcdefghijklmnopqrstuvwxyz':
+            print('Please enter a letter.')
+        else:
+            return guess
+
+
+
 def main():
     print(get_random_word(animals_data))
     print('H A N G M A N')
@@ -61,4 +86,5 @@ def main():
     correct_letters = ' '
     secret_word = get_random_word(animals_data)
     display_board(missed_letters, correct_letters, secret_word)
+    get_guess(already_guessed)
 main()
