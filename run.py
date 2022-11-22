@@ -28,7 +28,7 @@ def get_word():
 
 
 def play(chosen_word):
-    word_completion = "_" * len(chosen_word)
+    word_completion = "-" * len(chosen_word)
     guessed = False
     guessed_letters = []
     guessed_words = []
@@ -57,7 +57,7 @@ def play(chosen_word):
                 for index in indices:
                     word_as_list[index] = guess
                 word_completion = "".join(word_as_list)
-                if "_" not in word_completion:
+                if "-" not in word_completion:
                     guessed = True
             print(f"You have {tries} tries remaining")
         elif len(guess) == len(chosen_word) and guess.isalpha():
