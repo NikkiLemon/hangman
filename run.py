@@ -28,7 +28,6 @@ def get_word():
 
 
 def play(chosen_word):
-    print(type(chosen_word))
     word_completion = "_" * len(chosen_word)
     guessed = False
     guessed_letters = []
@@ -60,6 +59,7 @@ def play(chosen_word):
                 word_completion = "".join(word_as_list)
                 if "_" not in word_completion:
                     guessed = True
+            print(f"You have {tries} tries remaining")
         elif len(guess) == len(chosen_word) and guess.isalpha():
             if guess in guessed_words:
                 print("You already guessed the word", guess)
@@ -90,9 +90,9 @@ def play_again():
 
 def main():
     chosen_word = get_word()
-    print(chosen_word)
     play(chosen_word)
     play_again()
+
 
 
 
